@@ -1,75 +1,69 @@
 export const doctors = [
     {
       id: 1,
-      name: "Dr. Sarah Johnson",
+      name: "Dr. Chidinma Okafor",
       specialty: "Cardiology",
-      image: "https://randomuser.me/api/portraits/women/65.jpg",
       bio: "Board certified cardiologist with 15 years of experience in interventional cardiology and heart failure management.",
       experience: "15 years",
-      education: "Harvard Medical School",
-      languages: ["English", "Spanish"],
+      education : "University of Lagos College of Medicine",
+      languages: ["English", "Yoruba"],
       rating: 4.9,
-      patients: 2500
+      patients: 800
     },
     {
       id: 2,
-      name: "Dr. Michael Chen",
+      name: "Dr. Emeka Nwosu",
       specialty: "Neurology",
-      image: "https://randomuser.me/api/portraits/men/75.jpg",
       bio: "Specializes in movement disorders, epilepsy, and neurophysiology with expertise in deep brain stimulation.",
       experience: "12 years",
-      education: "Stanford Medical School",
-      languages: ["English", "Mandarin"],
+      education : "University of Nigeria College of Medicine",
+      languages: ["English", "Igbo"],
       rating: 4.8,
-      patients: 1800
+      patients: 600
     },
     {
       id: 3,
-      name: "Dr. Emily Rodriguez",
+      name: "Dr. Aisha Bello",
       specialty: "Pediatrics",
-      image: "https://randomuser.me/api/portraits/women/32.jpg",
       bio: "Dedicated pediatrician with special focus on preventive care and childhood development.",
       experience: "8 years",
-      education: "Johns Hopkins University",
-      languages: ["English", "Spanish"],
+      education : "Ahmadu Bello University College of Medicine",
+      languages: ["English", "Hausa"],
       rating: 4.9,
-      patients: 3200
+      patients: 900
     },
     {
       id: 4,
       name: "Dr. James Wilson",
       specialty: "Orthopedic Surgery",
-      image: "https://randomuser.me/api/portraits/men/45.jpg",
       bio: "Expert in joint replacement, sports medicine, and minimally invasive orthopedic procedures.",
       experience: "18 years",
-      education: "Mayo Clinic School of Medicine",
-      languages: ["English"],
+      education : "Obafemi Awolowo University College of Health Sciences",
+      languages: ["English", "Yoruba"],
       rating: 4.7,
-      patients: 2100
+      patients: 500
     },
     {
       id: 5,
-      name: "Dr. Lisa Thompson",
+      name: "Dr. Ifeoma Eze",
       specialty: "Obstetrics & Gynecology",
-      image: "https://randomuser.me/api/portraits/women/28.jpg",
       bio: "Comprehensive women's health care including high-risk pregnancies and gynecological surgery.",
       experience: "11 years",
-      education: "Yale School of Medicine",
-      languages: ["English", "French"],
+      education : "University of Ibadan College of Medicine",
+      languages: ["English", "Igbo"],
       rating: 4.9,
-      patients: 2800
+      patients: 700
     },
     {
       id: 6,
       name: "Dr. David Kim",
       specialty: "Oncology",
-      image: "https://randomuser.me/api/portraits/men/55.jpg",
       bio: "Medical oncologist specializing in breast cancer, lung cancer, and personalized treatment plans.",
       experience: "14 years",
-      education: "UCLA Medical School",
-      languages: ["English", "Korean"],
+      education : "Lagos State University College of Medicine",
+      languages: ["English", "Yoruba"],
       rating: 4.8,
-      patients: 1600
+      patients: 300
     }
   ];
   

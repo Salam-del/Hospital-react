@@ -3,6 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Email is required'),
@@ -42,8 +43,13 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-green-100 min-h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md">
+    <div className="bg-white min-h-screen flex items-center justify-center">
+      <motion.div
+        className="bg-white p-8 rounded-lg shadow-md"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+      >
         <div className="flex justify-center mb-6 gap-2">
           <button
             className={`px-4 py-2 rounded-l font-bold border ${loginType === 'patient' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
@@ -57,10 +63,10 @@ export default function Login() {
             onClick={() => handleToggle('doctor')}
             type="button"
           >
-            Doctor/Admin Login
+            Doctor Login
           </button>
         </div>
-        <h2 className="text-2xl font-bold text-center mb-6">{loginType === 'patient' ? 'Patient Login' : 'Doctor/Admin Login'}</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">{loginType === 'patient' ? 'Patient Login' : 'Doctor Login'}</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block text-gray-700 mb-2">Email</label>
@@ -93,7 +99,7 @@ export default function Login() {
         <p className="mt-4 text-center">
           New user? <Link to="/signup" className="text-primary hover:underline">Sign up</Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -1,9 +1,16 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 export default function About() {
   return (
     <div className="bg-green-50 min-h-screen py-12 px-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-10">
+      <motion.div
+        className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-10"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <h1 className="text-4xl font-extrabold text-green-800 mb-4 text-center">About MediCare Hospital</h1>
         <p className="text-lg text-gray-700 mb-8 text-center">
           MediCare Hospital is dedicated to providing compassionate, world-class healthcare to our community. Learn more about our mission, vision, and the values that guide us every day.
@@ -30,7 +37,7 @@ export default function About() {
           <h2 className="text-2xl font-bold text-green-700 mb-2">Our Story</h2>
           <p className="text-gray-700">Founded in 2005, MediCare Hospital has grown from a small clinic to a state-of-the-art medical center serving thousands of patients each year. Our dedicated team of professionals is committed to making a positive impact on the lives of our patients and their families.</p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 } 

@@ -82,6 +82,14 @@ export default function Home() {
               Patient Login
             </a>
           </motion.div>
+          <div className="flex justify-center mb-12">
+            <a
+              href="/insurance-plan"
+              className="bg-green-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow hover:bg-green-700 transition-colors border-2 border-green-700"
+            >
+              Register for Insurance Plan
+            </a>
+          </div>
 
           <div className="mt-24 flex flex-col md:flex-row items-center justify-center gap-12">
             <motion.div className="flex-1 flex flex-col gap-8" initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.5, duration: 0.6 }}>
@@ -171,7 +179,7 @@ export default function Home() {
                 Take the first step towards better health. Schedule a consultation with our expert team and experience the MediCare difference.
               </p>
               <a
-                href="/login"
+                href="/book-appointment"
                 className="inline-block bg-white text-green-700 font-bold px-8 py-3 rounded-lg shadow hover:bg-green-100 transition-colors text-lg"
               >
                 Book Now
@@ -207,7 +215,7 @@ export default function Home() {
             <div className="text-center md:text-right">
               <h4 className="font-semibold mb-2">Contact Us</h4>
               <p className="text-green-200">123 MediCare Avenue<br />Cityville, State 12345</p>
-              <p className="text-green-200 mt-2">Phone: <a href="tel:+1234567890" className="underline">+1 (234) 567-8900</a></p>
+              <p className="text-green-200 mt-2">Phone: <a href="tel:+234 813 456 7890" className="underline">+234 813 456 7890</a></p>
               <p className="text-green-200">Email: <a href="mailto:info@medicare.com" className="underline">info@medicare.com</a></p>
             </div>
           </div>

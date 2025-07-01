@@ -1,13 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { services } from '../data/doctor';
+import { useNavigate } from 'react-router-dom';
 
 const PatientHomepage = () => {
   const patient = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
+    name: 'Emeka Adeyemi',
+    email: 'emeka.adeyemi@gmail.com',
     memberSince: '2022-01-15',
-    profilePicture: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=150&q=80',
+    profilePicture: 'https://tse3.mm.bing.net/th/id/OIP.pwqclO0wa23CEQ6LXm-BZAHaE7?rs=1&pid=ImgDetMain&o=7&rm=3',
   };
 
   const appointments = [
@@ -27,24 +28,27 @@ const PatientHomepage = () => {
   ];
 
   const bills = [
-    { id: 1, description: 'Consultation Fee', amount: '$50', status: 'Paid', date: '2024-07-15' },
-    { id: 2, description: 'Blood Test', amount: '$30', status: 'Unpaid', date: '2024-07-20' },
+    { id: 1, description: 'Consultation Fee', amount: '₦50,000', status: 'Paid', date: '2024-07-15' },
+    { id: 2, description: 'Blood Test', amount: '₦3,000', status: 'Unpaid', date: '2024-07-20' },
   ];
 
   const emergencyContacts = [
     { id: 1, name: 'Emergency Services', phone: '911' },
-    { id: 2, name: 'Hospital Helpline', phone: '1-800-123-4567' },
+    { id: 2, name: 'Hospital Helpline', phone: '+234 813 456 7890' },
   ];
 
   const insurance = {
-    provider: 'HealthPlus Insurance',
+    provider: 'Family Plan',
     policyNumber: 'HP-123456789',
     validTill: '2025-12-31',
   };
 
   const prescriptions = [
-    { id: 1, medication: 'Atorvastatin', refillAvailable: true },
-    { id: 2, medication: 'Metformin', refillAvailable: false },
+    { id: 1, medication: 'Amoxicillin', refillAvailable: true },
+    { id: 2, medication: 'Paracetamol', refillAvailable: true },
+    { id: 3, medication: 'Ibuprofen', refillAvailable: false },
+    { id: 4, medication: 'Metformin', refillAvailable: true },
+    { id: 5, medication: 'Lisinopril', refillAvailable: false },
   ];
 
   const [showBookModal, setShowBookModal] = React.useState(false);
@@ -58,6 +62,18 @@ const PatientHomepage = () => {
     message: '',
   });
   const [bookSubmitted, setBookSubmitted] = React.useState(false);
+  const [refillRequested, setRefillRequested] = React.useState([]);
+  const [paidBills, setPaidBills] = React.useState([]);
+  const [showPaymentModal, setShowPaymentModal] = React.useState(false);
+  const [currentBill, setCurrentBill] = React.useState(null);
+  const [showRescheduleModal, setShowRescheduleModal] = React.useState(false);
+  const [selectedAppointment, setSelectedAppointment] = React.useState(null);
+  const [newDate, setNewDate] = React.useState('');
+  const [newTime, setNewTime] = React.useState('');
+  const [appointmentsState, setAppointmentsState] = React.useState(appointments);
+  const [notification, setNotification] = React.useState('');
+
+  const navigate = useNavigate();
 
   const handleBookChange = (e) => {
     setBookForm({ ...bookForm, [e.target.name]: e.target.value });
@@ -95,9 +111,73 @@ const PatientHomepage = () => {
     window.open(url, '_blank');
   };
 
+  const handleRequestRefill = (rxId) => {
+    setRefillRequested(prev => [...prev, rxId]);
+    setTimeout(() => {
+      setRefillRequested(prev => prev.filter(id => id !== rxId));
+    }, 2000); // show confirmation for 2s
+  };
+
+  const handlePayNow = (bill) => {
+    setCurrentBill(bill);
+    setShowPaymentModal(true);
+  };
+
+  const handleConfirmPayment = () => {
+    setPaidBills(prev => [...prev, currentBill.id]);
+    setShowPaymentModal(false);
+    setCurrentBill(null);
+  };
+
+  const handleClosePaymentModal = () => {
+    setShowPaymentModal(false);
+    setCurrentBill(null);
+  };
+
+  const handleOpenReschedule = (appointment) => {
+    setSelectedAppointment(appointment);
+    setNewDate(appointment.date);
+    setNewTime(appointment.time);
+    setShowRescheduleModal(true);
+  };
+
+  const handleCloseReschedule = () => {
+    setShowRescheduleModal(false);
+    setSelectedAppointment(null);
+    setNewDate('');
+    setNewTime('');
+  };
+
+  const handleRescheduleSubmit = (e) => {
+    e.preventDefault();
+    // Validation: date must not be in the past, time must not be empty
+    const today = new Date();
+    const selectedDate = new Date(newDate + 'T' + (newTime || '00:00'));
+    if (!newDate || !newTime) {
+      setNotification('Please select both a new date and time.');
+      return;
+    }
+    if (selectedDate < today) {
+      setNotification('The new appointment date and time cannot be in the past.');
+      return;
+    }
+    setAppointmentsState(prev => prev.map(app =>
+      app.id === selectedAppointment.id ? { ...app, date: newDate, time: newTime } : app
+    ));
+    setNotification('Appointment rescheduled successfully!');
+    handleCloseReschedule();
+    setTimeout(() => setNotification(''), 3000);
+  };
+
   return (
     <motion.div className="bg-gray-100 min-h-screen" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
       <div className="container mx-auto px-4 py-12">
+        {/* Notification */}
+        {notification && (
+          <div className="mb-6 p-4 bg-green-100 border-l-4 border-green-600 text-green-800 rounded shadow text-center animate-fade-in">
+            {notification}
+          </div>
+        )}
         {/* Patient Profile Section */}
         <motion.section className="bg-white rounded-2xl shadow-lg p-8 mb-12 flex items-center gap-8" initial={{ x: -40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
           <img
@@ -108,7 +188,7 @@ const PatientHomepage = () => {
           <div>
             <h1 className="text-4xl font-bold text-primary">{patient.name}</h1>
             <p className="text-gray-600 text-lg">{patient.email}</p>
-            <p className="text-gray-500">Member Since: {patient.memberSince}</p>
+            <p className="text-gray-500">Insurance Plan: {insurance.provider}</p>
           </div>
         </motion.section>
 
@@ -116,7 +196,7 @@ const PatientHomepage = () => {
         <motion.section className="mb-12" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.6 }}>
           <h2 className="text-3xl font-bold text-primary mb-6">Your Upcoming Appointments</h2>
           <div className="grid md:grid-cols-2 gap-8">
-            {appointments.map((appointment, idx) => (
+            {appointmentsState.map((appointment, idx) => (
               <motion.div
                 key={appointment.id}
                 className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-600"
@@ -127,13 +207,35 @@ const PatientHomepage = () => {
                 <h3 className="text-xl font-bold text-gray-800">{appointment.department}</h3>
                 <p className="text-gray-600">with {appointment.doctor}</p>
                 <p className="text-gray-800 font-semibold mt-4">{appointment.date} at {appointment.time}</p>
-                <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors" onClick={() => handleOpenReschedule(appointment)}>
                   Reschedule
                 </button>
               </motion.div>
             ))}
           </div>
         </motion.section>
+
+        {/* Reschedule Modal */}
+        {showRescheduleModal && selectedAppointment && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full relative">
+              <button onClick={handleCloseReschedule} className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+              <h2 className="text-2xl font-bold text-green-700 mb-4 text-center">Reschedule Appointment</h2>
+              <form onSubmit={handleRescheduleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-gray-700 mb-1">New Date</label>
+                  <input type="date" value={newDate} onChange={e => setNewDate(e.target.value)} required className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-primary" />
+                </div>
+                <div>
+                  <label className="block text-gray-700 mb-1">New Time</label>
+                  <input type="time" value={newTime} onChange={e => setNewTime(e.target.value)} required className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-primary" />
+                </div>
+                <button type="submit" className="w-full bg-green-700 text-white py-3 rounded-lg font-bold text-lg shadow hover:bg-green-800 transition-colors mb-2">Save Changes</button>
+                <button type="button" onClick={handleCloseReschedule} className="w-full bg-gray-200 text-gray-800 py-2 rounded-lg font-semibold">Cancel</button>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Medical Records Section */}
         <motion.section initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}>
@@ -247,14 +349,27 @@ const PatientHomepage = () => {
               <li key={bill.id} className="p-4 flex justify-between items-center">
                 <div>
                   <span className="font-semibold">{bill.description}</span> - {bill.amount}
-                  <span className={`ml-4 px-2 py-1 rounded text-xs ${bill.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{bill.status}</span>
+                  <span className={`ml-4 px-2 py-1 rounded text-xs ${paidBills.includes(bill.id) || bill.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{paidBills.includes(bill.id) || bill.status === 'Paid' ? 'Paid' : 'Unpaid'}</span>
                 </div>
                 <span className="text-gray-400 text-sm">{bill.date}</span>
-                {bill.status === 'Unpaid' && <button className="ml-4 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Pay Now</button>}
+                {!(paidBills.includes(bill.id) || bill.status === 'Paid') && <button className="ml-4 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700" onClick={() => handlePayNow(bill)}>Pay Now</button>}
               </li>
             ))}
           </ul>
         </motion.section>
+
+        {/* Payment Modal */}
+        {showPaymentModal && currentBill && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full relative">
+              <button onClick={handleClosePaymentModal} className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+              <h2 className="text-2xl font-bold text-green-700 mb-4 text-center">Confirm Payment</h2>
+              <p className="mb-4 text-center">Are you sure you want to pay <span className="font-semibold">{currentBill.amount}</span> for <span className="font-semibold">{currentBill.description}</span>?</p>
+              <button onClick={handleConfirmPayment} className="w-full bg-green-700 text-white py-3 rounded-lg font-bold text-lg shadow hover:bg-green-800 transition-colors mb-2">Confirm & Pay</button>
+              <button onClick={handleClosePaymentModal} className="w-full bg-gray-200 text-gray-800 py-2 rounded-lg font-semibold">Cancel</button>
+            </div>
+          </div>
+        )}
 
         {/* Emergency Contacts Section */}
         <motion.section className="mb-12" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.24, duration: 0.6 }}>
@@ -287,7 +402,11 @@ const PatientHomepage = () => {
               <li key={rx.id} className="p-4 flex justify-between items-center">
                 <span>{rx.medication}</span>
                 {rx.refillAvailable ? (
-                  <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Request Refill</button>
+                  refillRequested.includes(rx.id) ? (
+                    <span className="text-green-600 font-semibold">Refill Requested!</span>
+                  ) : (
+                    <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700" onClick={() => handleRequestRefill(rx.id)}>Request Refill</button>
+                  )
                 ) : (
                   <span className="text-gray-400">No refills left</span>
                 )}
@@ -318,7 +437,8 @@ const PatientHomepage = () => {
           <h2 className="text-2xl font-bold text-primary mb-4">Settings</h2>
           <div className="bg-white rounded-xl shadow-md p-4">
             <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg mr-4">Update Profile</button>
-            <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">Change Password</button>
+            <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg mr-4">Change Password</button>
+            <button onClick={() => navigate('/login')} className="bg-red-600 text-white px-4 py-2 rounded-lg">Logout</button>
           </div>
         </motion.section>
       </div>

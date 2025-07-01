@@ -1,32 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const doctor = {
   name: 'Dr. Sarah Johnson',
   email: 'sarah.johnson@hospital.com',
   specialty: 'Cardiology',
   memberSince: '2015-03-10',
-  profilePicture: 'https://randomuser.me/api/portraits/women/65.jpg',
+  profilePicture: 'https://images.pexels.com/photos/1181696/pexels-photo-1181696.jpeg',
 };
 
 const initialAppointments = [
-  { id: 1, patient: 'Jane Smith', time: '10:00 AM', date: '2024-08-15', reason: 'Check-up', status: 'Upcoming', notes: '', completed: false, noShow: false },
-  { id: 2, patient: 'John Doe', time: '11:30 AM', date: '2024-08-15', reason: 'Follow-up', status: 'Upcoming', notes: '', completed: false, noShow: false },
+  { id: 1, patient: 'Ngozi Okafor', time: '10:00 AM', date: '2024-08-15', reason: 'Check-up', status: 'Upcoming', notes: '', completed: false, noShow: false },
+  { id: 2, patient: 'Emeka Adeyemi', time: '11:30 AM', date: '2024-08-15', reason: 'Follow-up', status: 'Upcoming', notes: '', completed: false, noShow: false },
 ];
 
 const initialPatients = [
-  { id: 1, name: 'Jane Smith', lastVisit: '2024-07-20', history: ['2024-07-20: Check-up', '2024-06-10: Blood Test'], records: ['Blood Test.pdf'], prescriptions: ['Atorvastatin'] },
-  { id: 2, name: 'John Doe', lastVisit: '2024-07-15', history: ['2024-07-15: Follow-up'], records: ['ECG.pdf'], prescriptions: ['Metformin'] },
+  { id: 1, name: 'Ngozi Okafor', lastVisit: '2024-07-20', history: ['2024-07-20: Check-up', '2024-06-10: Blood Test'], records: ['Blood Test.pdf'], prescriptions: ['Atorvastatin'] },
+  { id: 2, name: 'Emeka Adeyemi', lastVisit: '2024-07-15', history: ['2024-07-15: Follow-up'], records: ['ECG.pdf'], prescriptions: ['Metformin'] },
 ];
 
 const messages = [
   { id: 1, from: 'Admin', content: 'Please update your profile.', date: '2024-08-10' },
-  { id: 2, from: 'Jane Smith', content: 'Thank you for the consultation!', date: '2024-08-09' },
+  { id: 2, from: 'Ngozi Okafor', content: 'Thank you for the consultation!', date: '2024-08-09' },
 ];
 
 export default function DoctorDashboard() {
   const [appointments, setAppointments] = useState(initialAppointments);
-  const [patients, setPatients] = useState(initialPatients);
+  const [patients, setPatients] = useState(() => {
+    const stored = localStorage.getItem('patients');
+    return stored ? JSON.parse(stored) : initialPatients;
+  });
   const [showRescheduleModal, setShowRescheduleModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [rescheduleForm, setRescheduleForm] = useState({ date: '', time: '', reason: '' });
@@ -40,11 +44,27 @@ export default function DoctorDashboard() {
   const [availabilityForm, setAvailabilityForm] = useState(availability);
   const [showSupportModal, setShowSupportModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-  const [twoFactor, setTwoFactor] = useState(false);
   const [profilePic, setProfilePic] = useState(doctor.profilePicture);
   // Analytics mock
   const patientsSeen = 12;
   const appointmentTrends = [3, 5, 2, 4, 6, 1, 7]; // mock data for chart
+  const navigate = useNavigate();
+
+  // Save patients to localStorage whenever it changes
+  useEffect(() => {
+    // Replace old names if they exist in localStorage
+    const updatedPatients = patients.map(p => {
+      if (p.name === 'Jane Smith') return { ...p, name: 'Ngozi Okafor' };
+      if (p.name === 'John Doe') return { ...p, name: 'Emeka Adeyemi' };
+      return p;
+    });
+    if (JSON.stringify(updatedPatients) !== JSON.stringify(patients)) {
+      setPatients(updatedPatients);
+      localStorage.setItem('patients', JSON.stringify(updatedPatients));
+    } else {
+      localStorage.setItem('patients', JSON.stringify(patients));
+    }
+  }, [patients]);
 
   // Appointment actions
   const handleMarkCompleted = (id) => setAppointments(appts => appts.map(a => a.id === id ? { ...a, completed: true, noShow: false } : a));
@@ -57,6 +77,15 @@ export default function DoctorDashboard() {
 
   // Add patient
   const handleAddPatient = (e) => { e.preventDefault(); setPatients([...patients, { ...newPatientForm, id: Date.now() }]); setShowAddPatientModal(false); setNewPatientForm({ name: '', lastVisit: '', history: [], records: [], prescriptions: [] }); };
+
+  // Remove patient
+  const handleRemovePatient = (id) => {
+    setPatients(patients => patients.filter(p => p.id !== id));
+    if (selectedPatient && selectedPatient.id === id) {
+      setShowPatientModal(false);
+      setSelectedPatient(null);
+    }
+  };
 
   // Availability
   const handleOpenAvailability = () => { setAvailabilityForm(availability); setShowAvailabilityModal(true); };
@@ -99,26 +128,9 @@ export default function DoctorDashboard() {
   return (
     <motion.div className="bg-gray-100 min-h-screen" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
       <div className="container mx-auto px-4 py-12">
-        {/* Analytics & Insights Section */}
-        <motion.section className="mb-12" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1, duration: 0.6 }}>
-          <h2 className="text-2xl font-bold text-primary mb-4">Analytics & Insights</h2>
-          <div className="flex gap-8 flex-wrap">
-            <div className="bg-white rounded-xl shadow-md p-6 flex-1 min-w-[200px]">
-              <div className="text-3xl font-bold">{patientsSeen}</div>
-              <div>Patients seen this week</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-md p-6 flex-1 min-w-[200px]">
-              <div className="font-bold mb-2">Appointment Trends</div>
-              <div className="flex gap-1 items-end h-16">
-                {appointmentTrends.map((v, i) => (
-                  <div key={i} className="bg-blue-400 w-4" style={{ height: `${v * 10 + 10}px` }}></div>
-                ))}
-              </div>
-              <div className="text-xs text-gray-400 mt-2">(Mock chart)</div>
-            </div>
-          </div>
-        </motion.section>
-
+        <div className="flex justify-end mb-6">
+          <button onClick={() => navigate('/login')} className="bg-red-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors">Logout</button>
+        </div>
         {/* Doctor Profile Section */}
         <motion.section className="bg-white rounded-2xl shadow-lg p-8 mb-12 flex items-center gap-8" initial={{ x: -40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
           <img
@@ -136,10 +148,32 @@ export default function DoctorDashboard() {
                 <input type="file" accept="image/*" className="hidden" onChange={handleProfilePicChange} />
                 Change Photo
               </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={twoFactor} onChange={() => setTwoFactor(v => !v)} />
-                <span className="text-sm">Two-Factor Authentication</span>
-              </label>
+            </div>
+          </div>
+        </motion.section>
+        {/* Analytics & Insights Section */}
+        <motion.section className="mb-12" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1, duration: 0.6 }}>
+          <h2 className="text-2xl font-bold text-primary mb-4">Analytics & Insights</h2>
+          <div className="flex gap-8 flex-wrap">
+            <div className="bg-white rounded-xl shadow-md p-6 flex-1 min-w-[200px]">
+              <div className="text-3xl font-bold">{patientsSeen}</div>
+              <div>Patients seen this week</div>
+            </div>
+            <div className="bg-white rounded-xl shadow-md p-6 flex-1 min-w-[200px]">
+              <div className="font-bold mb-2">Appointment Trends</div>
+              <div className="flex gap-3 items-end h-32 relative">
+                {appointmentTrends.map((v, i) => (
+                  <div key={i} className="flex flex-col items-center w-8">
+                    <span className="mb-1 text-xs font-semibold text-blue-700">{v}</span>
+                    <div
+                      className="w-6 transition-all duration-300 rounded-t-xl shadow-md bg-gradient-to-t from-blue-400 to-green-400"
+                      style={{ height: `${v * 10 + 10}px` }}
+                    ></div>
+                    <span className="mt-2 text-xs text-gray-500">{['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="text-xs text-gray-400 mt-2">Appointments per day (Mon-Sun)</div>
             </div>
           </div>
         </motion.section>
@@ -155,7 +189,7 @@ export default function DoctorDashboard() {
         <motion.section className="mb-12" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.6 }}>
           <h2 className="text-3xl font-bold text-primary mb-6">Today's Appointments</h2>
           <div className="grid md:grid-cols-2 gap-8">
-            {appointments.map((appointment, idx) => (
+            {appointments.filter(appointment => !appointment.completed).map((appointment, idx) => (
               <motion.div
                 key={appointment.id}
                 className={`bg-white rounded-xl shadow-md p-6 border-l-4 ${appointment.completed ? 'border-green-600' : appointment.noShow ? 'border-red-600' : 'border-blue-600'}`}
@@ -234,8 +268,11 @@ export default function DoctorDashboard() {
               >
                 <h3 className="text-xl font-bold text-gray-800">{patient.name}</h3>
                 <p className="text-gray-500">Last Visit: {patient.lastVisit}</p>
-                <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" onClick={() => handleOpenPatientModal(patient)}>View Details</button>
-          </motion.div>
+                <div className="flex gap-2 mt-4">
+                  <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" onClick={() => handleOpenPatientModal(patient)}>View Details</button>
+                  <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors" onClick={() => handleRemovePatient(patient.id)}>Remove</button>
+                </div>
+              </motion.div>
             ))}
           </div>
         </motion.section>
@@ -260,9 +297,10 @@ export default function DoctorDashboard() {
                   {selectedPatient.prescriptions.map((p, i) => <li key={i}>{p}</li>)}
                 </ul>
               </div>
-              <div className="mt-4">
+              <div className="mt-4 flex gap-2">
                 <button className="bg-green-600 text-white px-4 py-2 rounded-lg mr-2">Write Prescription</button>
                 <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">Upload Record</button>
+                <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={() => handleRemovePatient(selectedPatient.id)}>Remove Patient</button>
               </div>
             </div>
           </div>

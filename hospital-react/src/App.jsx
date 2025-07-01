@@ -8,7 +8,7 @@ import PatientHomepage from './Pages/PatientHomepage';
 import DoctorDashboard from './Pages/DoctorDashboard';
 import BookAppointment from './Pages/BookAppointment';
 import Contact from './Pages/Contact';
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar';  
 import LiveChatWidget from './components/LiveChatWidget';
 import Pregnancy from './Pages/Pregnancy';
 import MenstrualCalculator from './Pages/MenstrualCalculator';
@@ -16,6 +16,8 @@ import SpecialFunds from './Pages/SpecialFunds';
 import HeartHealthyTips from './Pages/HeartHealthyTips';
 import About from './Pages/About';
 import SignUp from './Pages/SignUp';
+import DoctorProfile from './Pages/DoctorProfile';
+import InsurancePlan from './Pages/InsurancePlan';
 
 export default function App() {
   return (
@@ -39,6 +41,8 @@ export default function App() {
             <Route path="/heart-healthy-tips" element={<HeartHealthyTips />} />
             <Route path="/about" element={<About />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/doctor/:id" element={<DoctorProfile />} />
+            <Route path="/insurance-plan" element={<InsurancePlan />} />
           </Routes>
         </main>
       </div>

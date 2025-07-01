@@ -1,9 +1,24 @@
 import { useEffect, useState } from 'react';
 import { doctors } from '../data/doctor';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+
+const mockReviews = [
+  { id: 1, reviewer: 'Ngozi O.', rating: 5, comment: 'Excellent care and very professional.' },
+  { id: 2, reviewer: 'Tunde A.', rating: 4, comment: 'Very knowledgeable and friendly.' },
+];
+const mockSchedule = [
+  { day: 'Monday', time: '9:00 AM - 3:00 PM' },
+  { day: 'Wednesday', time: '10:00 AM - 4:00 PM' },
+  { day: 'Friday', time: '12:00 PM - 6:00 PM' },
+];
 
 export default function Doctors() {
   const [loading, setLoading] = useState(true);
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
+  const [showProfile, setShowProfile] = useState(false);
+  const [profileDoctor, setProfileDoctor] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Simulate API loading
@@ -35,15 +50,29 @@ export default function Doctors() {
     );
   };
 
+  const handleViewProfile = (doctor) => {
+    navigate(`/doctor/${doctor.id}`);
+  };
+  const handleCloseProfile = () => {
+    setShowProfile(false);
+    setProfileDoctor(null);
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true, amount: 0.2 }}
+        >
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Our Medical Specialists</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Meet our team of experienced and dedicated healthcare professionals committed to providing exceptional care.
           </p>
-        </div>
+        </motion.div>
 
         {/* Specialty Filter */}
         <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -68,8 +97,15 @@ export default function Doctors() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredDoctors.map(doctor => (
-              <div key={doctor.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            {filteredDoctors.map((doctor, idx) => (
+              <motion.div
+                key={doctor.id}
+                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                initial={{ opacity: 0, x: 60 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: idx * 0.1 }}
+                viewport={{ once: true, amount: 0.2 }}
+              >
                 <div className="relative">
                   <img 
                     src={doctor.image} 
@@ -112,12 +148,12 @@ export default function Doctors() {
                     <button className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                       Book Appointment
                     </button>
-                    <button className="px-4 py-2 border border-green-600 text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors">
+                    <button className="px-4 py-2 border border-green-600 text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors" onClick={() => handleViewProfile(doctor)}>
                       View Profile
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
@@ -128,6 +164,60 @@ export default function Doctors() {
           </div>
         )}
       </div>
+
+      {/* Doctor Profile Modal */}
+      {showProfile && profileDoctor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full relative">
+            <button onClick={handleCloseProfile} className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+            <div className="flex flex-col md:flex-row gap-8 items-center mb-6">
+              <img src={profileDoctor.image} alt={profileDoctor.name} className="w-40 h-40 rounded-full object-cover border-4 border-green-200" />
+              <div>
+                <h2 className="text-3xl font-bold text-green-800 mb-2">{profileDoctor.name}</h2>
+                <div className="mb-2 text-gray-700">{profileDoctor.bio}</div>
+                <div className="mb-2"><span className="font-semibold">Specialty:</span> {profileDoctor.specialty}</div>
+                <div className="mb-2"><span className="font-semibold">Experience:</span> {profileDoctor.experience}</div>
+                <div className="mb-2"><span className="font-semibold">Education:</span> {profileDoctor.education}</div>
+                <div className="mb-2"><span className="font-semibold">Languages:</span> {profileDoctor.languages.join(', ')}</div>
+                <div className="mb-2"><span className="font-semibold">Certifications:</span> Board Certified</div>
+              </div>
+            </div>
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-green-700 mb-2">Areas of Expertise</h3>
+              <ul className="list-disc pl-6 text-gray-700">
+                <li>{profileDoctor.specialty}</li>
+                <li>General Medicine</li>
+                <li>Patient Care</li>
+              </ul>
+            </div>
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-green-700 mb-2">Patient Reviews</h3>
+              <ul className="divide-y divide-gray-200">
+                {mockReviews.map(r => (
+                  <li key={r.id} className="py-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <StarRating rating={r.rating} />
+                      <span className="font-semibold text-gray-800">{r.reviewer}</span>
+                    </div>
+                    <div className="text-gray-600">{r.comment}</div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-green-700 mb-2">Availability / Schedule</h3>
+              <ul className="text-gray-700">
+                {mockSchedule.map(s => (
+                  <li key={s.day}><span className="font-semibold">{s.day}:</span> {s.time}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="flex justify-end">
+              <button className="bg-green-700 text-white px-6 py-3 rounded-lg font-bold text-lg shadow hover:bg-green-800 transition-colors">Book Appointment with {profileDoctor.name}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

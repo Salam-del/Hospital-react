@@ -6,7 +6,7 @@ export default function SignUp() {
     name: '',
     email: '',
     phone: '',
-    password: '',
+    password: '',     
     confirmPassword: '',
   });
   const [submitted, setSubmitted] = useState(false);

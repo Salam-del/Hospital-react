@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const aisha = {
   name: 'Aisha Yusuf',
-  photo: 'https://randomuser.me/api/portraits/women/44.jpg',
+  photo: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?auto=format&fit=crop&w=400&q=80',
   story: `Aisha is a bright, loving young woman facing a serious medical challenge. She urgently needs financial support for her treatment and ongoing care. Your donation will help cover her hospital bills, medications, and recovery expenses. Every contribution, no matter how small, makes a difference. Thank you for your kindness and support!`,
   bank: {
     accountName: 'Aisha Yusuf',
@@ -48,8 +48,7 @@ export default function SpecialFunds() {
           </div>
         </div>
         <div className="mb-6">
-          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg shadow hover:bg-blue-700 transition-colors mb-2">Donate Online (Mock)</button>
-          <div className="mb-2 text-gray-600 text-sm text-center">(Online donation coming soon)</div>
+          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg shadow hover:bg-blue-700 transition-colors mb-2">Donate</button>
         </div>
         <div className="mb-6">
           <h2 className="text-xl font-bold text-primary mb-2">Progress</h2>
