@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 export default function Home() {
     return (
-      <div className="bg-gray-50 min-h-screen flex flex-col">
+      <div className="bg-black-min-h-screen flex flex-col">
         <motion.section className="container mx-auto px-4 py-20 flex-1" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7 }}>
           <div className="text-center mb-16">
             <motion.h1 className="text-5xl md:text-6xl font-extrabold text-primary mb-6 tracking-tight drop-shadow-lg" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2, duration: 0.5 }}>

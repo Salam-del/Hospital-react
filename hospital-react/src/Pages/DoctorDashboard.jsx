@@ -40,14 +40,14 @@ export default function DoctorDashboard() {
   const [showAddPatientModal, setShowAddPatientModal] = useState(false);
   const [newPatientForm, setNewPatientForm] = useState({ name: '', lastVisit: '', history: [], records: [], prescriptions: [] });
   const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
-  const [availability, setAvailability] = useState('9:00 AM - 5:00 PM');
+  const [availability, setAvailability] = useState('10:00 AM - 5:00 PM');
   const [availabilityForm, setAvailabilityForm] = useState(availability);
   const [showSupportModal, setShowSupportModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [profilePic, setProfilePic] = useState(doctor.profilePicture);
   // Analytics mock
-  const patientsSeen = 12;
-  const appointmentTrends = [3, 5, 2, 4, 6, 1, 7]; // mock data for chart
+  const patientsSeen = 28;
+  const appointmentTrends = [1, 3, 5, 4, 6, 2, 7]; // mock data for chart
   const navigate = useNavigate();
 
   // Save patients to localStorage whenever it changes

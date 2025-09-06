@@ -6,7 +6,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-green-700 text-white shadow-md">
+    <header className="bg-green-800 text-white shadow-md">
       <div className="w-full px-0 py-3 flex justify-between items-center">
         <Link to="/" className="flex items-center text-2xl font-extrabold tracking-tight">
           <img

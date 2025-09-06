@@ -43,7 +43,7 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-white min-h-screen flex items-center justify-center">
+    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
       <motion.div
         className="bg-white p-8 rounded-lg shadow-md"
         initial={{ opacity: 0, scale: 0.8 }}
@@ -79,7 +79,7 @@ export default function Login() {
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
           </div>
           <div>
-            <label className="block text-gray-700 mb-2">Password</label>
+            <label className="block text-gray-700 mb-2">Password</label>  
             <input 
               {...register("password")}
               type="password" 

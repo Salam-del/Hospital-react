@@ -38,10 +38,10 @@ export default function BookAppointment() {
   }
 
   return (
-    <div className="bg-green-100 min-h-screen">
+    <div className="bg-gray-200 min-h-screen">
       <div className="container mx-auto px-4 py-12 max-w-lg">
         <div className="bg-white rounded-xl shadow-lg p-8">
-          <h2 className="text-3xl font-extrabold text-primary mb-6 text-center">Book an Appointment</h2>
+          <h2 className="text-3xl font-bold text-primary mb-6 text-center">Book an Appointment</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-gray-700 mb-1">Full Name</label>

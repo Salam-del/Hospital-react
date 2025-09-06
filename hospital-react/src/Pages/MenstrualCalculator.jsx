@@ -10,7 +10,7 @@ const MenstrualCalculator = () => {
     if (lastPeriodDate) {
       const date = new Date(lastPeriodDate);
       
-      // Calculate next period date
+  
       const nextPeriodDate = new Date(date);
       nextPeriodDate.setDate(date.getDate() + parseInt(cycleLength, 10));
       setNextPeriod(nextPeriodDate.toDateString());
